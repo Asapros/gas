@@ -1,6 +1,7 @@
 #include "ui.h"
 #include <raylib.h>
 #include "../rng.h"
+#include "calculator.h"
 
 const int ALL_OPTIONS = 3;
 
@@ -13,14 +14,15 @@ void UiSystem::after_draw() {
 
     DrawText(TextFormat("V = %.0f", this->state->boundary->volume()), 0, 32, 32, WHITE);
     DrawText(TextFormat("p = %.2e", this->state->average_load), 0, 64, 32, WHITE);
-    DrawText(TextFormat("T = %f", this->state->average_temperature), 0, 128, 32, WHITE);
-    float R = this->state->average_load * this->state->boundary->volume() / this->state->particles.size() * this->state->average_temperature;
-    DrawText(TextFormat("pV/nT = %.2e", R), 0, 160, 32, WHITE);
+    DrawText(TextFormat("T = %f K", this->state->average_temperature), 0, 128, 32, WHITE);
+    float R = this->state->average_load * this->state->boundary->volume() / (this->state->particles.size() / AVOGADRO_CONSTANT) * this->state->average_temperature;
+    DrawText(TextFormat("n = %.2e mol", this->state->particles.size() / AVOGADRO_CONSTANT), 0, 160, 32, WHITE);
+    DrawText(TextFormat("pV/nT = %.2e", R), 0, 192, 32, WHITE);
 
     CubeBoundary* boundary = dynamic_cast<CubeBoundary*>(this->state->boundary.get());
     DrawText(TextFormat("X: < %.0f >", boundary->size.values[0]), 0, 256, 32, this->current_option == 0 ? YELLOW : WHITE);
     DrawText(TextFormat("Y: < %.0f >", boundary->size.values[1]), 0, 288, 32, this->current_option == 1 ? YELLOW : WHITE);
-    DrawText(TextFormat("n: < %d >", this->state->particles.size()), 0, 320, 32, this->current_option == 2 ? YELLOW : WHITE);
+    DrawText(TextFormat("N: < %d >", this->state->particles.size()), 0, 320, 32, this->current_option == 2 ? YELLOW : WHITE);
 }
 
 void UiSystem::tick() {

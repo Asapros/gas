@@ -2,6 +2,9 @@
 
 #include "system.h"
 
+const double BOLTZMANN_CONSTANT = 1.3806e-23;
+const double AVOGADRO_CONSTANT = 6.022e23;
+
 struct CalculatorSystem : System {
     private:
         float last_tick;
