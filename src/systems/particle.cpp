@@ -5,9 +5,9 @@
 #include <raymath.h>
 
 void ParticleSystem::init() {
-    this->state->boundary = std::make_unique<CubeBoundary>(VectorN {600, 600}, VectorN { 560, 0 });
+    this->state->boundary = std::make_unique<CubeBoundary>(VectorN {600, 600, 600}, VectorN { 560, 0, 0 });
 
-    for (int i = 0; i < 30000; i++) {
+    for (int i = 0; i < 1000; i++) {
         VectorN direction(this->state->boundary->dimensions());
         for (std::size_t dimension = 0; dimension < this->state->boundary->dimensions(); dimension++) {
             direction[dimension] = randomFloat(-1, 1);
@@ -20,7 +20,7 @@ void ParticleSystem::init() {
 
 void ParticleSystem::draw() {
     for (Particle particle : this->state->particles) {
-        DrawCircle(particle.position[0], particle.position[1], 3.0, RED);
+        DrawCircle(particle.position[0], particle.position[1], particle.position[2] / 100, RED);
     }
 }
 

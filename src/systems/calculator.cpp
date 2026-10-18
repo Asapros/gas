@@ -30,5 +30,5 @@ void CalculatorSystem::tick() {
     for (Particle &particle : this->state->particles) {
         total_kinetic_energy += particle.mass * particle.velocity.length_squared() / 2;
     }
-    this->state->average_temperature = total_kinetic_energy / this->state->particles.size() / BOLTZMANN_CONSTANT * this->state->boundary->dimensions() / 2;
+    this->state->average_temperature = total_kinetic_energy / this->state->particles.size()/ BOLTZMANN_CONSTANT / this->state->boundary->dimensions() * 2;
 }
