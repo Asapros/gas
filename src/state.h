@@ -1,20 +1,22 @@
 #pragma once
 
+#include "boundary.h"
+#include <memory>
 #include <raylib.h>
 #include <vector>
 
 struct Particle {
-    Vector2 position;
-    Vector2 velocity;
+    VectorN position;
+    VectorN velocity;
     double mass;
 };
 
 struct GameState {
-    Vector2 container_size;
-    Vector2 container_offset;
+    std::unique_ptr<Boundary> boundary;
     std::vector<Particle> particles;
     double last_tick_collision_momentum;
     double calculation_peroid;
     double average_load;
     double average_temperature;
+    int last_tick_collisions;
 };
