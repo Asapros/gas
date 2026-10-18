@@ -1,5 +1,4 @@
 #include "calculator.h"
-#include <iostream>
 #include <raylib.h>
 #include <raymath.h>
 
@@ -15,18 +14,15 @@ void CalculatorSystem::init() {
 
 void CalculatorSystem::tick() {
     float delta = GetTime() - this->last_tick;
+    this->last_tick = GetTime();
     this->time_since_calculation += delta;
     this->collision_momentum_accumulator += this->state->last_tick_collision_momentum;
     this->collision_accumulator += this->state->last_tick_collisions;
 
-    this->last_tick = GetTime();
     if (this->time_since_calculation < this->state->calculation_peroid) {
         return;
     }
     this->time_since_calculation -= this->state->calculation_peroid;
-    std::cout << "avg collision momentum: " << this->collision_momentum_accumulator / this->collision_accumulator << std::endl;
-    std::cout << "collisions: " << this->collision_accumulator / this->state->calculation_peroid << std::endl;
-    std::cout << "summed momentum per second: " << this->collision_momentum_accumulator / this->state->calculation_peroid << std::endl;
     this->state->average_load = this->collision_momentum_accumulator / this->state->calculation_peroid / this->state->boundary->surface();
     this->collision_momentum_accumulator = 0;
     this->collision_accumulator = 0;

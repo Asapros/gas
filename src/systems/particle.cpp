@@ -1,15 +1,13 @@
 #include "particle.h"
 #include "../rng.h"
-#include <iostream>
 #include <memory>
-#include <ostream>
 #include <raylib.h>
 #include <raymath.h>
 
 void ParticleSystem::init() {
     this->state->boundary = std::make_unique<CubeBoundary>(VectorN {600, 600}, VectorN { 560, 0 });
 
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 30000; i++) {
         VectorN direction(this->state->boundary->dimensions());
         for (std::size_t dimension = 0; dimension < this->state->boundary->dimensions(); dimension++) {
             direction[dimension] = randomFloat(-1, 1);
@@ -28,6 +26,7 @@ void ParticleSystem::draw() {
 
 void ParticleSystem::tick() {
     float time_delta = GetTime() - this->last_tick;
+    this->last_tick = GetTime();
     int total_collisions = 0;
     double total_collision_momentum = 0;
     for (Particle &particle : this->state->particles) {
@@ -45,7 +44,6 @@ void ParticleSystem::tick() {
             total_collisions++;
         }
     }
-    this->last_tick = GetTime();
     this->state->last_tick_collision_momentum = total_collision_momentum;
     this->state->last_tick_collisions = total_collisions;
 }
