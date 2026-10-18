@@ -7,7 +7,7 @@ const double BOLTZMANN_CONSTANT = 1.3806e-23;
 void CalculatorSystem::init() {
     this->last_tick = GetTime();
     this->time_since_calculation = 0;
-    this->state->calculation_peroid = 2.0;
+    this->state->calculation_peroid = 1.0;
     this->collision_momentum_accumulator = 0;
     this->collision_accumulator = 0;
 }
