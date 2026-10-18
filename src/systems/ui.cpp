@@ -1,0 +1,14 @@
+#include "ui.h"
+#include <raylib.h>
+
+void UiSystem::after_draw() {
+    DrawText(TextFormat("FPS = %d", GetFPS()), 0, 0, 32, WHITE);
+
+    DrawText(TextFormat("S = %.0f m^2", this->state->container_size.x * this->state->container_size.y), 0, 32, 32, WHITE);
+    DrawText(TextFormat("q = %.10e N/m", this->state->average_load), 0, 64, 32, WHITE);
+    DrawText(TextFormat("n = %d", this->state->particles.size()), 0, 96, 32, WHITE);
+    DrawText(TextFormat("T = %f", this->state->average_temperature), 0, 128, 32, WHITE);
+    float R = this->state->average_load * this->state->container_size.x * this->state->container_size.y / this->state->particles.size() / this->state->average_temperature;
+    DrawText(TextFormat("qS/nT = %.10e", R), 0, 160, 32, WHITE);
+
+}
