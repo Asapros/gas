@@ -12,6 +12,7 @@ void UpdateDrawFrame(void);
 int main()
 {
     SetConfigFlags(FLAG_VSYNC_HINT);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 #ifndef PLATFORM_WEB
     ToggleBorderlessWindowed();
     SetTargetFPS(0);

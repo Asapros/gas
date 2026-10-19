@@ -6,14 +6,25 @@
 #include <raymath.h>
 #include "../rng.h"
 
+const int BUFFER_SIZE_3D = 1024;
+
 void ParticleSystem::init() {
-    this->state->boundary = std::make_unique<CubeBoundary>(VectorN {400, 400 }, VectorN { 0, 0 });
+    this->state->boundary = std::make_unique<CubeBoundary>(VectorN {400, 400, 400 }, VectorN { 0, 0, 0 });
 
     for (int i = 0; i < 512; i++) {
         VectorN velocity = randomUnitVector(this->state->boundary->dimensions()) * 300.0;
         this->state->particles.emplace_back(Particle { this->state->boundary->randomPoint(), velocity, 1.67e-27 });
     }
     last_tick = GetTime();
+
+    camera = { 0 };
+    camera.position = (Vector3){ 200.0f, 200.0f, 200.0f };
+    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
+    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
+    camera.fovy = 45.0f;
+    camera.projection = CAMERA_PERSPECTIVE;
+    render_buffer = LoadRenderTexture(BUFFER_SIZE_3D, BUFFER_SIZE_3D);
+    this->state->view_dimensions = 2;
 }
 
 void ParticleSystem::draw() {
@@ -23,12 +34,74 @@ void ParticleSystem::draw() {
     DrawRectangleLines(x_offset, 0, viewport_size, viewport_size, WHITE);
 
     CubeBoundary* boundary = dynamic_cast<CubeBoundary*>(this->state->boundary.get());
-    float scale = (viewport_size - 2 * margin) / std::max(boundary->size[0], boundary->size[1]);
+    if (this->state->view_dimensions == 2) {
+        float scale = (viewport_size - 2 * margin) / std::max(boundary->size[0], boundary->size[1]);
 
-    DrawRectangleLines(margin + x_offset, margin, boundary->size[0]*scale, boundary->size[1]*scale, WHITE);
+        DrawRectangleLines(margin + x_offset, margin, boundary->size[0]*scale, boundary->size[1]*scale, WHITE);
 
-    for (Particle particle : this->state->particles) {
-        DrawCircle(x_offset + margin + particle.position[0] * scale, margin + particle.position[1] * scale, 3 * scale, RED);
+        for (Particle particle : this->state->particles) {
+            DrawCircle(x_offset + margin + particle.position[0] * scale, margin + particle.position[1] * scale, 3 * scale, RED);
+        }
+    } else if (this->state->view_dimensions == 3) {
+        float distance = Vector3Distance(camera.position, camera.target);
+        float fov = camera.fovy * DEG2RAD;
+
+        float visible_size = 2.0f * distance * tanf(fov / 2.0f);
+
+        float cube_width  = boundary->size[0];
+        float cube_height = boundary->size[1];
+        float cube_depth  = boundary->dimensions() >= 3
+                            ? boundary->size[2] : 0.0f;
+
+        float diagonal = sqrtf(
+            cube_width * cube_width +
+            cube_height * cube_height +
+            cube_depth * cube_depth
+        );
+
+        float scale = visible_size / diagonal * 0.9;
+
+        UpdateCamera(&camera, CAMERA_ORBITAL);
+
+        BeginTextureMode(render_buffer);
+            ClearBackground(BLACK);
+
+            BeginMode3D(camera);
+                DrawCubeWires(
+                    (Vector3){ 0, 0, 0 },
+                    cube_width * scale,
+                    cube_height * scale,
+                    cube_depth * scale,
+                    WHITE
+                );
+
+                for (Particle particle : this->state->particles) {
+                    DrawSphere({
+                        (particle.position[0] - cube_width / 2) * scale,
+                        (particle.position[1] - cube_height / 2) * scale,
+                        (particle.position[2] - cube_depth / 2) * scale
+                    }, 3 * scale, RED);
+                }
+            EndMode3D();
+        EndTextureMode();
+
+        DrawTexturePro(
+            render_buffer.texture,
+            (Rectangle){
+                0, 0,
+                (float)BUFFER_SIZE_3D,
+                -(float)BUFFER_SIZE_3D
+            },
+            (Rectangle){
+                (float)(x_offset + margin),
+                (float)margin,
+                (float)(viewport_size - margin - margin),
+                (float)(viewport_size - margin - margin)
+            },
+            (Vector2){ 0, 0 },
+            0.0f,
+            WHITE
+        );
     }
 }
 

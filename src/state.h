@@ -19,4 +19,5 @@ struct GameState {
     double average_load;
     double average_temperature;
     int last_tick_collisions;
+    int view_dimensions;
 };
