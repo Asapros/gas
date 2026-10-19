@@ -1,12 +1,13 @@
 #include "particle.h"
 #include "../rng.h"
+#include <algorithm>
 #include <memory>
 #include <raylib.h>
 #include <raymath.h>
 #include "../rng.h"
 
 void ParticleSystem::init() {
-    this->state->boundary = std::make_unique<CubeBoundary>(VectorN {400, 400 }, VectorN { 500, 50 });
+    this->state->boundary = std::make_unique<CubeBoundary>(VectorN {400, 400 }, VectorN { 0, 0 });
 
     for (int i = 0; i < 512; i++) {
         VectorN velocity = randomUnitVector(this->state->boundary->dimensions()) * 300.0;
@@ -16,8 +17,18 @@ void ParticleSystem::init() {
 }
 
 void ParticleSystem::draw() {
+    float viewport_size = std::min(GetScreenWidth(), GetScreenHeight());
+    float x_offset = GetScreenWidth() - viewport_size;
+    float margin = viewport_size / 40;
+    DrawRectangleLines(x_offset, 0, viewport_size, viewport_size, WHITE);
+
+    CubeBoundary* boundary = dynamic_cast<CubeBoundary*>(this->state->boundary.get());
+    float scale = (viewport_size - 2 * margin) / std::max(boundary->size[0], boundary->size[1]);
+
+    DrawRectangleLines(margin + x_offset, margin, boundary->size[0]*scale, boundary->size[1]*scale, WHITE);
+
     for (Particle particle : this->state->particles) {
-        DrawCircle(particle.position[0], particle.position[1], 3, RED);
+        DrawCircle(x_offset + margin + particle.position[0] * scale, margin + particle.position[1] * scale, 3 * scale, RED);
     }
 }
 
