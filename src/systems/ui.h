@@ -4,6 +4,7 @@
 
 struct UiSystem : System {
     private:
+        int current_group;
         int current_option;
     using System::System;
     void after_draw() override;
