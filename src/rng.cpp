@@ -1,5 +1,6 @@
 #include "vectorn.h"
 #include <random>
+#include <raylib.h>
 
 namespace {
     std::mt19937 rng(std::random_device{}());
@@ -16,3 +17,13 @@ VectorN randomUnitVector(std::size_t dimensions) {
     }
     return direction.normalized();
 }
+
+Color randomColor() {
+    return Color {
+        static_cast<unsigned char>(randomFloat(50, 200)),
+        static_cast<unsigned char>(randomFloat(50, 200)),
+        static_cast<unsigned char>(randomFloat(50, 200)),
+        255
+    };
+}
+

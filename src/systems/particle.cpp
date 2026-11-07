@@ -13,7 +13,7 @@ void ParticleSystem::init() {
 
     for (int i = 0; i < 512; i++) {
         VectorN velocity = randomUnitVector(this->state->boundary->dimensions()) * 300.0;
-        this->state->particles.emplace_back(Particle { this->state->boundary->randomPoint(), velocity, 1.67e-27 });
+        this->state->particles.emplace_back(Particle { this->state->boundary->randomPoint(), velocity, 1.67e-27, randomColor() });
     }
     last_tick = GetTime();
 

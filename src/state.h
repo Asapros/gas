@@ -9,6 +9,7 @@ struct Particle {
     VectorN position;
     VectorN velocity;
     double mass;
+    Color color;
 };
 
 struct GameState {
