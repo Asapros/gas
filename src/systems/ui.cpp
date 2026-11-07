@@ -9,6 +9,7 @@ const Setting SETTINGS_CYCLE[] = {
     Setting::CONTAINER_HEIGHT,
     Setting::CONTAINER_DEPTH,
     Setting::PARTICLE_NUMBER,
+    Setting::PARTICLE_SPEED,
     Setting::VIEW_DIMENSIONS
 };
 
@@ -138,8 +139,9 @@ void UiSystem::after_draw() {
     DrawTextEx(this->font, get_translation("label.number_of_moles", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
     DrawTextEx(this->font, TextFormat("%.2e", this->state->particles.size()/AVOGADRO_CONSTANT), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
 
-    DrawTextEx(this->font, get_translation("label.average_velocity", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, TextFormat("%.0f m/s", this->state->particles[0].velocity.length()), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
+    DrawTextEx(this->font, get_translation("label.average_velocity", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, SETTINGS_CYCLE[this->current_setting] == PARTICLE_SPEED ? YELLOW : WHITE);
+    
+    DrawTextEx(this->font, TextFormat("%.0f m/s", this->state->average_speed), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, SETTINGS_CYCLE[this->current_setting] == PARTICLE_SPEED ? YELLOW : WHITE);
     DrawTextEx(this->font, get_translation("label.total_kinetic_energy", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
     DrawTextEx(this->font, TextFormat("%.2e J", this->state->total_kinetic_energy), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
     DrawTextEx(this->font, get_translation("label.temperature", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
@@ -241,6 +243,17 @@ void UiSystem::tick() {
                 }
                 break;
             }
+            case PARTICLE_SPEED: {
+                for (Particle &particle : this->state->particles) {
+                    double speed = particle.velocity.length();
+                    if (speed == 0) {
+                        particle.velocity = randomUnitVector(3);
+                    }
+                    speed += 10;
+                    particle.velocity = particle.velocity.normalized() * speed;
+                }
+                break;
+            }
             case VIEW_DIMENSIONS: {
                 this->state->view_dimensions = 2 + (this->state->view_dimensions + 1) % 2;
                 break;
@@ -274,6 +287,22 @@ void UiSystem::tick() {
                         particle.position = VectorN { particle.position.values[0], particle.position.values[1] };
                     }
                 };
+                break;
+            }
+            case PARTICLE_SPEED: {
+                for (Particle &particle : this->state->particles) {
+                    double speed = particle.velocity.length();
+                    if (std::abs(speed) >= 9.9) {
+                        speed -= 10.0;
+                    }
+                    if (std::abs(speed) < 0.1) {
+                        for (size_t i = 0; i < particle.velocity.dimensions(); i++) {
+                            particle.velocity.values[i] = 0;
+                        }
+                    } else {
+                        particle.velocity = particle.velocity.normalized() * speed;
+                    }
+                }
                 break;
             }
             case PARTICLE_NUMBER: {

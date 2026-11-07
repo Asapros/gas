@@ -21,6 +21,7 @@ struct GameState {
     double average_temperature;
     double average_collisions;
     double average_momentum_transferred;
+    double average_speed;
     double scale;
     int last_tick_collisions;
     int view_dimensions;
