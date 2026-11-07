@@ -23,9 +23,11 @@ void UiSystem::init() {
 }
 
 #define FONT_SIZE 52
-#define VALUE_SHIFT_CHARACTERS 10
+#define VALUE_SHIFT_CHARACTERS 8
+#define COLUMN_SHIFT_CHARACTERS 16
 
 void UiSystem::after_draw() {
+
     float y = 0;
     DrawTextEx(this->font, "[ Container ]", { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE * 1.5, 0, WHITE);
     y += FONT_SIZE;
@@ -66,6 +68,12 @@ void UiSystem::after_draw() {
     DrawTextEx(this->font, "3 m", { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
     DrawTextEx(this->font, "FPS:", { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
     DrawTextEx(this->font, TextFormat("%d", GetFPS()), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
+
+    y = 0;
+    DrawTextEx(this->font, "[ Measurements ]", { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE * 1.5, 0, WHITE);
+    y += FONT_SIZE;
+    DrawTextEx(this->font, "Shape:", { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
+    DrawTextEx(this->font, "Rectangular", { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
 }
 
 void UiSystem::tick() {
@@ -99,7 +107,20 @@ void UiSystem::tick() {
                     boundary->offset = VectorN { 0, 0, 0 };
                     for (Particle &particle : this->state->particles) {
                         double speed = particle.velocity.length();
-                        particle.velocity = (VectorN { particle.velocity.values[0], particle.velocity.values[1], randomFloat(0, speed) }).normalized() * speed;
+
+                        VectorN xy = VectorN{
+                            particle.velocity.values[0],
+                            particle.velocity.values[1]
+                        }.normalized();
+
+                        float z = randomFloat(-1.0, 1.0);
+                        float xy_scale = sqrt(1.0 - z*z);
+
+                        particle.velocity = VectorN {
+                            xy.values[0] * xy_scale,
+                            xy.values[1] * xy_scale,
+                            z
+                        } * speed;
                         particle.position = VectorN { particle.position.values[0], particle.position.values[1], 0 };
                     }
                 };
