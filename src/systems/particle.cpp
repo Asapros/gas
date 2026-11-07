@@ -37,11 +37,14 @@ void ParticleSystem::draw() {
     if (this->state->view_dimensions == 2) {
         float scale = (viewport_size - 2 * margin) / std::max(boundary->size[0], boundary->size[1]);
         this->state->scale = scale;
+        
+        float visual_x_offset = (viewport_size - 2 * margin - boundary->size[0]*scale)/2;
+        float visual_y_offset = (viewport_size - 2 * margin - boundary->size[1]*scale)/2;
 
-        DrawRectangleLines(margin + x_offset, margin, boundary->size[0]*scale, boundary->size[1]*scale, WHITE);
+        DrawRectangleLines(margin + x_offset + visual_x_offset, margin + visual_y_offset, boundary->size[0]*scale, boundary->size[1]*scale, WHITE);
 
         for (Particle particle : this->state->particles) {
-            DrawCircle(x_offset + margin + particle.position[0] * scale, margin + particle.position[1] * scale, 3 * scale, RED);
+            DrawCircle(x_offset + margin + particle.position[0] * scale + visual_x_offset, margin + particle.position[1] * scale + visual_y_offset, 3 * scale, RED);
         }
     } else if (this->state->view_dimensions == 3) {
         float distance = Vector3Distance(camera.position, camera.target);
