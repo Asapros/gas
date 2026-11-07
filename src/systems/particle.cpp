@@ -36,6 +36,7 @@ void ParticleSystem::draw() {
     CubeBoundary* boundary = dynamic_cast<CubeBoundary*>(this->state->boundary.get());
     if (this->state->view_dimensions == 2) {
         float scale = (viewport_size - 2 * margin) / std::max(boundary->size[0], boundary->size[1]);
+        this->state->scale = scale;
 
         DrawRectangleLines(margin + x_offset, margin, boundary->size[0]*scale, boundary->size[1]*scale, WHITE);
 
@@ -61,6 +62,8 @@ void ParticleSystem::draw() {
 
         float scale = visible_size / diagonal * 0.9;
 
+        this->state->scale = 0.9f * (viewport_size - 2 * margin) / diagonal;
+
         UpdateCamera(&camera, CAMERA_ORBITAL);
 
         BeginTextureMode(render_buffer);
@@ -79,7 +82,7 @@ void ParticleSystem::draw() {
                     DrawSphere({
                         (particle.position[0] - cube_width / 2) * scale,
                         (particle.position[1] - cube_height / 2) * scale,
-                        (particle.position[2] - cube_depth / 2) * scale
+                        ((particle.position.dimensions() >= 3 ? particle.position[2] : 0) - cube_depth / 2) * scale
                     }, 3 * scale, RED);
                 }
             EndMode3D();

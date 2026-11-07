@@ -18,6 +18,7 @@ struct GameState {
     double calculation_peroid;
     double average_load;
     double average_temperature;
+    double scale;
     int last_tick_collisions;
     int view_dimensions;
 };

@@ -1,12 +1,23 @@
 #pragma once
 
 #include "system.h"
+#include <raylib.h>
+
+enum Setting {
+    CONTAINER_WIDTH,
+    CONTAINER_HEIGHT,
+    CONTAINER_DEPTH,
+    PARTICLE_NUMBER,
+    VIEW_DIMENSIONS
+};
 
 struct UiSystem : System {
-    private:
-        int current_group;
-        int current_option;
     using System::System;
+    private:
+        Font font;
+        bool setting_selected;
+        size_t current_setting;
+    public:
     void after_draw() override;
     void tick() override;
     void init() override;
