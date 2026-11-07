@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include "ui.h"
 #include "../rng.h"
+#include "calculator.h"
 
 const Setting SETTINGS_CYCLE[] = {
     Setting::CONTAINER_WIDTH,
@@ -23,7 +24,7 @@ void UiSystem::init() {
 }
 
 #define FONT_SIZE 52
-#define VALUE_SHIFT_CHARACTERS 8
+#define VALUE_SHIFT_CHARACTERS 10
 #define COLUMN_SHIFT_CHARACTERS 16
 
 void UiSystem::after_draw() {
@@ -54,9 +55,15 @@ void UiSystem::after_draw() {
     DrawTextEx(this->font, "0 (no collisions)", { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
     DrawTextEx(this->font, "Number:", { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, SETTINGS_CYCLE[this->current_setting] == PARTICLE_NUMBER ? YELLOW : WHITE);
     DrawTextEx(this->font, TextFormat("%d", this->state->particles.size()), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, SETTINGS_CYCLE[this->current_setting] == PARTICLE_NUMBER ? YELLOW : WHITE);
+    DrawTextEx(this->font, "Number of moles:", { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.2e", this->state->particles.size()/AVOGADRO_CONSTANT), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
 
     DrawTextEx(this->font, "Average velocity:", { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
     DrawTextEx(this->font, TextFormat("%.0f m/s", this->state->particles[0].velocity.length()), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
+    DrawTextEx(this->font, "Total kinetic energy:", { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.2e J", this->state->total_kinetic_energy), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
+    DrawTextEx(this->font, "Temperature:", { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.1f K", this->state->average_temperature), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
     y += FONT_SIZE;
     DrawTextEx(this->font, "[ View ]", { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE * 1.5, 0, WHITE);
     y += FONT_SIZE;
@@ -72,8 +79,16 @@ void UiSystem::after_draw() {
     y = 0;
     DrawTextEx(this->font, "[ Measurements ]", { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE * 1.5, 0, WHITE);
     y += FONT_SIZE;
-    DrawTextEx(this->font, "Shape:", { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, "Rectangular", { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
+    DrawTextEx(this->font, "Averaging peroid:", { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.1f s", this->state->calculation_peroid), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
+    DrawTextEx(this->font, "Collision frequency:", { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.0f Hz", this->state->average_collisions), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
+    DrawTextEx(this->font, "Momentum transfer:", { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.2e N", this->state->average_momentum_transferred), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
+    DrawTextEx(this->font, "Pressure:", { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.2e N/m%s", this->state->average_load, this->state->boundary->dimensions() >= 3 ? "²" : ""), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
+    DrawTextEx(this->font, "pV/nT:", { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.2f J/K*mol", this->state->average_load * this->state->boundary->volume() / this->state->particles.size() * AVOGADRO_CONSTANT / this->state->average_temperature), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
 }
 
 void UiSystem::tick() {
