@@ -47,7 +47,7 @@ const Translation TRANSLATIONS[] = {
     { "label.momentum_transfer", "Momentum transfer:", "Przekazywany pęd:" },
     { "label.pressure", "Pressure:", "Ciśnienie:" },
     { "label.pvt", "pV/nT:", "pV/nT:" },
-    { "help.arrow_keys", "Select and alter settings with arrow keys", "Aby zmienić ustawienia, użyj strzałek" },
+    { "help.arrow_keys", "Select and alter settings with arrow keys", "Użyj strzałek, aby zmienić ustawienia" },
     { "help.language", "Press L to change the language", "Naciśnij L, aby zmienić język" },
     { "help.2d", "Set Depth = 0 to simulate in 2D", "Ustaw Głębokość = 0, aby symulować w 2D" },
     { "value.rectangular", "Rectangular", "Prostokątny" },
@@ -178,6 +178,7 @@ void UiSystem::after_draw() {
     DrawTextEx(this->font, get_translation("help.arrow_keys", this->language), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
     DrawTextEx(this->font, get_translation("help.2d", this->language), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
     DrawTextEx(this->font, get_translation("help.language", this->language), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
+    DrawTextEx(this->font, "v1.0.0 J.F.", { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, DARKGRAY);
 }
 
 void UiSystem::tick() {
