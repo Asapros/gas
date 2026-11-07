@@ -52,7 +52,7 @@ if (EMSCRIPTEN)
   )
   target_link_options(gas PRIVATE
       "--preload-file"
-      "${CMAKE_SOURCE_DIR}/assets@assets"
+      "${CMAKE_SOURCE_DIR}/resources@resources"
   )
 
   target_link_options(gas PRIVATE

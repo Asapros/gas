@@ -70,6 +70,12 @@ const char *get_translation(std::string name, Language language) {
     }
 }
 
+#if defined(PLATFORM_WEB)
+#define FONT_SIZE 32
+#else
+#define FONT_SIZE 52
+#endif
+
 void UiSystem::init() {
     std::vector<int> codepoints(128);
 
@@ -95,7 +101,7 @@ void UiSystem::init() {
 
     this->font = LoadFontEx(
         "resources/lmroman12-regular.otf",
-        128,
+        FONT_SIZE * 2,
         codepoints.data(),
         static_cast<int>(codepoints.size())
     );
@@ -103,8 +109,6 @@ void UiSystem::init() {
     setting_selected = false;
     this->language = POLISH;
 }
-
-#define FONT_SIZE 52
 #define VALUE_SHIFT_CHARACTERS 10
 #define COLUMN_SHIFT_CHARACTERS 16
 
