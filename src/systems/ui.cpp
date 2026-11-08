@@ -70,12 +70,6 @@ const char *get_translation(std::string name, Language language) {
     }
 }
 
-#if defined(PLATFORM_WEB)
-#define FONT_SIZE 32
-#else
-#define FONT_SIZE 52
-#endif
-
 void UiSystem::init() {
     std::vector<int> codepoints(128);
 
@@ -101,88 +95,88 @@ void UiSystem::init() {
 
     this->font = LoadFontEx(
         "resources/lmroman12-regular.otf",
-        FONT_SIZE * 2,
+        92,
         codepoints.data(),
         static_cast<int>(codepoints.size())
     );
     SetTextureFilter(this->font.texture, TEXTURE_FILTER_BILINEAR);
     setting_selected = false;
-    this->language = POLISH;
+    this->language = ENGLISH;
 }
 #define VALUE_SHIFT_CHARACTERS 10
 #define COLUMN_SHIFT_CHARACTERS 16
 
 void UiSystem::after_draw() {
-
+    const float font_size = (float) GetScreenHeight() / 40;
     float y = 0;
-    DrawTextEx(this->font, get_translation("section.container", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE * 1.5, 0, WHITE);
-    y += FONT_SIZE;
+    DrawTextEx(this->font, get_translation("section.container", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size * 1.5f, 0, WHITE);
+    y += font_size;
     CubeBoundary* boundary = dynamic_cast<CubeBoundary*>(this->state->boundary.get());
-    DrawTextEx(this->font, get_translation("label.shape", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, get_translation("value.rectangular", this->language), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
-    DrawTextEx(this->font, get_translation("label.width", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, SETTINGS_CYCLE[this->current_setting] == CONTAINER_WIDTH ? YELLOW : WHITE);
-    DrawTextEx(this->font, TextFormat("%.0f m", boundary->size[0]), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, SETTINGS_CYCLE[this->current_setting] == CONTAINER_WIDTH ? YELLOW : WHITE);
-    DrawTextEx(this->font, get_translation("label.height", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, SETTINGS_CYCLE[this->current_setting] == CONTAINER_HEIGHT ? YELLOW : WHITE);
-    DrawTextEx(this->font, TextFormat("%.0f m", boundary->size[1]), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, SETTINGS_CYCLE[this->current_setting] == CONTAINER_HEIGHT ? YELLOW : WHITE);
-    DrawTextEx(this->font, get_translation("label.depth", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, SETTINGS_CYCLE[this->current_setting] == CONTAINER_DEPTH ? YELLOW : WHITE);
-    DrawTextEx(this->font, TextFormat("%.0f m", boundary->dimensions() >= 3 ? boundary->size[2] : 0), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, SETTINGS_CYCLE[this->current_setting] == CONTAINER_DEPTH ? YELLOW : WHITE);
-    DrawTextEx(this->font, get_translation("label.wall_surface", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, TextFormat("%.0f m%s", boundary->surface(), boundary->dimensions() >= 3 ? "²" : ""), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
-    DrawTextEx(this->font, get_translation("label.volume", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, TextFormat("%.0f m%s", boundary->volume(), boundary->dimensions() >= 3 ? "³" : "²"), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
+    DrawTextEx(this->font, get_translation("label.shape", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, get_translation("value.rectangular", this->language), { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, LIGHTGRAY);
+    DrawTextEx(this->font, get_translation("label.width", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, SETTINGS_CYCLE[this->current_setting] == CONTAINER_WIDTH ? YELLOW : WHITE);
+    DrawTextEx(this->font, TextFormat("%.0f m", boundary->size[0]), { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, SETTINGS_CYCLE[this->current_setting] == CONTAINER_WIDTH ? YELLOW : WHITE);
+    DrawTextEx(this->font, get_translation("label.height", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, SETTINGS_CYCLE[this->current_setting] == CONTAINER_HEIGHT ? YELLOW : WHITE);
+    DrawTextEx(this->font, TextFormat("%.0f m", boundary->size[1]), { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, SETTINGS_CYCLE[this->current_setting] == CONTAINER_HEIGHT ? YELLOW : WHITE);
+    DrawTextEx(this->font, get_translation("label.depth", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, SETTINGS_CYCLE[this->current_setting] == CONTAINER_DEPTH ? YELLOW : WHITE);
+    DrawTextEx(this->font, TextFormat("%.0f m", boundary->dimensions() >= 3 ? boundary->size[2] : 0), { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, SETTINGS_CYCLE[this->current_setting] == CONTAINER_DEPTH ? YELLOW : WHITE);
+    DrawTextEx(this->font, get_translation("label.wall_surface", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.0f m%s", boundary->surface(), boundary->dimensions() >= 3 ? "²" : ""), { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, LIGHTGRAY);
+    DrawTextEx(this->font, get_translation("label.volume", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.0f m%s", boundary->volume(), boundary->dimensions() >= 3 ? "³" : "²"), { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, LIGHTGRAY);
 
-    y += FONT_SIZE;
-    DrawTextEx(this->font, get_translation("section.particles", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE * 1.5, 0, WHITE);
-    y += FONT_SIZE;
-    DrawTextEx(this->font, get_translation("label.mass_per_particle", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, TextFormat("%.2e kg", this->state->particles[0].mass), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
-    DrawTextEx(this->font, get_translation("label.particle_radius", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, get_translation("value.no_collisions", this->language), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
-    DrawTextEx(this->font, get_translation("label.number", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, SETTINGS_CYCLE[this->current_setting] == PARTICLE_NUMBER ? YELLOW : WHITE);
-    DrawTextEx(this->font, TextFormat("%d", this->state->particles.size()), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, SETTINGS_CYCLE[this->current_setting] == PARTICLE_NUMBER ? YELLOW : WHITE);
-    DrawTextEx(this->font, get_translation("label.number_of_moles", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, TextFormat("%.2e", this->state->particles.size()/AVOGADRO_CONSTANT), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
+    y += font_size;
+    DrawTextEx(this->font, get_translation("section.particles", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size * 1.5f, 0, WHITE);
+    y += font_size;
+    DrawTextEx(this->font, get_translation("label.mass_per_particle", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.2e kg", this->state->particles[0].mass), { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, LIGHTGRAY);
+    DrawTextEx(this->font, get_translation("label.particle_radius", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, get_translation("value.no_collisions", this->language), { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, LIGHTGRAY);
+    DrawTextEx(this->font, get_translation("label.number", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, SETTINGS_CYCLE[this->current_setting] == PARTICLE_NUMBER ? YELLOW : WHITE);
+    DrawTextEx(this->font, TextFormat("%d", this->state->particles.size()), { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, SETTINGS_CYCLE[this->current_setting] == PARTICLE_NUMBER ? YELLOW : WHITE);
+    DrawTextEx(this->font, get_translation("label.number_of_moles", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.2e", this->state->particles.size()/AVOGADRO_CONSTANT), { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, LIGHTGRAY);
 
-    DrawTextEx(this->font, get_translation("label.average_velocity", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, SETTINGS_CYCLE[this->current_setting] == PARTICLE_SPEED ? YELLOW : WHITE);
+    DrawTextEx(this->font, get_translation("label.average_velocity", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, SETTINGS_CYCLE[this->current_setting] == PARTICLE_SPEED ? YELLOW : WHITE);
     
-    DrawTextEx(this->font, TextFormat("%.0f m/s", this->state->average_speed), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, SETTINGS_CYCLE[this->current_setting] == PARTICLE_SPEED ? YELLOW : WHITE);
-    DrawTextEx(this->font, get_translation("label.total_kinetic_energy", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, TextFormat("%.2e J", this->state->total_kinetic_energy), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
-    DrawTextEx(this->font, get_translation("label.temperature", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, TextFormat("%.1f K", this->state->average_temperature), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
-    y += FONT_SIZE;
-    DrawTextEx(this->font, get_translation("section.view", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE * 1.5, 0, WHITE);
-    y += FONT_SIZE;
-    DrawTextEx(this->font, get_translation("label.dimensions", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, SETTINGS_CYCLE[this->current_setting] == VIEW_DIMENSIONS ? YELLOW : WHITE);
-    DrawTextEx(this->font, TextFormat("%d", this->state->view_dimensions), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, SETTINGS_CYCLE[this->current_setting] == VIEW_DIMENSIONS ? YELLOW : WHITE);
-    DrawTextEx(this->font, get_translation("label.scale", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, TextFormat("100 px : %.2f m", 100/this->state->scale), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
-    DrawTextEx(this->font, get_translation("label.particle_radius", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, "3 m", { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
-    DrawTextEx(this->font, get_translation("label.fps", this->language), { FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, TextFormat("%d", GetFPS()), { FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
+    DrawTextEx(this->font, TextFormat("%.0f m/s", this->state->average_speed), { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, SETTINGS_CYCLE[this->current_setting] == PARTICLE_SPEED ? YELLOW : WHITE);
+    DrawTextEx(this->font, get_translation("label.total_kinetic_energy", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.2e J", this->state->total_kinetic_energy), { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, LIGHTGRAY);
+    DrawTextEx(this->font, get_translation("label.temperature", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.1f K", this->state->average_temperature), { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, LIGHTGRAY);
+    y += font_size;
+    DrawTextEx(this->font, get_translation("section.view", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size * 1.5f, 0, WHITE);
+    y += font_size;
+    DrawTextEx(this->font, get_translation("label.dimensions", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, SETTINGS_CYCLE[this->current_setting] == VIEW_DIMENSIONS ? YELLOW : WHITE);
+    DrawTextEx(this->font, TextFormat("%d", this->state->view_dimensions), { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, SETTINGS_CYCLE[this->current_setting] == VIEW_DIMENSIONS ? YELLOW : WHITE);
+    DrawTextEx(this->font, get_translation("label.scale", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("100 px : %.2f m", 100/this->state->scale), { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, LIGHTGRAY);
+    DrawTextEx(this->font, get_translation("label.particle_radius", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, "3 m", { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, LIGHTGRAY);
+    DrawTextEx(this->font, get_translation("label.fps", this->language), { font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%d", GetFPS()), { font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, LIGHTGRAY);
 
     y = 0;
-    DrawTextEx(this->font, get_translation("section.measurements", this->language), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE * 1.5, 0, WHITE);
-    y += FONT_SIZE;
-    DrawTextEx(this->font, get_translation("label.averaging_period", this->language), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, TextFormat("%.1f s", this->state->calculation_peroid), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
-    DrawTextEx(this->font, get_translation("label.collision_frequency", this->language), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, TextFormat("%.0f Hz", this->state->average_collisions), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
-    DrawTextEx(this->font, get_translation("label.momentum_transfer", this->language), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, TextFormat("%.2e N", this->state->average_momentum_transferred), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
-    DrawTextEx(this->font, get_translation("label.pressure", this->language), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, TextFormat("%.2e N/m%s", this->state->average_load, this->state->boundary->dimensions() >= 3 ? "²" : ""), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
-    DrawTextEx(this->font, get_translation("label.pvt", this->language), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, TextFormat("%.2f J/K*mol", this->state->average_load * this->state->boundary->volume() / this->state->particles.size() * AVOGADRO_CONSTANT / this->state->average_temperature), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * VALUE_SHIFT_CHARACTERS, y }, FONT_SIZE, 0, LIGHTGRAY);
-    y += FONT_SIZE * 1.5;
-    y += FONT_SIZE;
-    DrawTextEx(this->font, get_translation("section.help", this->language), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE * 1.5, 0, WHITE);
-    y += FONT_SIZE;
-    DrawTextEx(this->font, get_translation("help.arrow_keys", this->language), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, get_translation("help.2d", this->language), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, get_translation("help.language", this->language), { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, WHITE);
-    DrawTextEx(this->font, "v1.0.0 J.F.", { FONT_SIZE * COLUMN_SHIFT_CHARACTERS + FONT_SIZE * 1.5, y += FONT_SIZE * 1.5 }, FONT_SIZE, 0, DARKGRAY);
+    DrawTextEx(this->font, get_translation("section.measurements", this->language), { font_size * COLUMN_SHIFT_CHARACTERS + font_size * 1.5f, y += font_size * 1.5f }, font_size * 1.5f, 0, WHITE);
+    y += font_size;
+    DrawTextEx(this->font, get_translation("label.averaging_period", this->language), { font_size * COLUMN_SHIFT_CHARACTERS + font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.1f s", this->state->calculation_peroid), { font_size * COLUMN_SHIFT_CHARACTERS + font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, LIGHTGRAY);
+    DrawTextEx(this->font, get_translation("label.collision_frequency", this->language), { font_size * COLUMN_SHIFT_CHARACTERS + font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.0f Hz", this->state->average_collisions), { font_size * COLUMN_SHIFT_CHARACTERS + font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, LIGHTGRAY);
+    DrawTextEx(this->font, get_translation("label.momentum_transfer", this->language), { font_size * COLUMN_SHIFT_CHARACTERS + font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.2e N", this->state->average_momentum_transferred), { font_size * COLUMN_SHIFT_CHARACTERS + font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, LIGHTGRAY);
+    DrawTextEx(this->font, get_translation("label.pressure", this->language), { font_size * COLUMN_SHIFT_CHARACTERS + font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.2e N/m%s", this->state->average_load, this->state->boundary->dimensions() >= 3 ? "²" : ""), { font_size * COLUMN_SHIFT_CHARACTERS + font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, LIGHTGRAY);
+    DrawTextEx(this->font, get_translation("label.pvt", this->language), { font_size * COLUMN_SHIFT_CHARACTERS + font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, TextFormat("%.2f J/K*mol", this->state->average_load * this->state->boundary->volume() / this->state->particles.size() * AVOGADRO_CONSTANT / this->state->average_temperature), { font_size * COLUMN_SHIFT_CHARACTERS + font_size * VALUE_SHIFT_CHARACTERS, y }, font_size, 0, LIGHTGRAY);
+    y += font_size * 1.5f;
+    y += font_size;
+    DrawTextEx(this->font, get_translation("section.help", this->language), { font_size * COLUMN_SHIFT_CHARACTERS + font_size * 1.5f, y += font_size * 1.5f }, font_size * 1.5f, 0, WHITE);
+    y += font_size;
+    DrawTextEx(this->font, get_translation("help.arrow_keys", this->language), { font_size * COLUMN_SHIFT_CHARACTERS + font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, get_translation("help.2d", this->language), { font_size * COLUMN_SHIFT_CHARACTERS + font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, get_translation("help.language", this->language), { font_size * COLUMN_SHIFT_CHARACTERS + font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, WHITE);
+    DrawTextEx(this->font, "v1.0.0 J.F.", { font_size * COLUMN_SHIFT_CHARACTERS + font_size * 1.5f, y += font_size * 1.5f }, font_size, 0, DARKGRAY);
 }
 
 void UiSystem::tick() {
@@ -244,7 +238,7 @@ void UiSystem::tick() {
             case PARTICLE_NUMBER: {
                 int to_spawn = this->state->particles.size();
                 for (int i = 0; i < to_spawn; i++) {
-                    this->state->particles.emplace_back(Particle {this->state->boundary->randomPoint(), randomUnitVector(this->state->boundary->dimensions()) * 300.0, 1.67e-27});
+                    this->state->particles.emplace_back(Particle {this->state->boundary->randomPoint(), randomUnitVector(this->state->boundary->dimensions()) * 300.0, 1.67e-27, RED});
                 }
                 break;
             }

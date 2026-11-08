@@ -13,10 +13,13 @@ int main()
 {
     SetConfigFlags(FLAG_VSYNC_HINT);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    SetConfigFlags(FLAG_WINDOW_HIGHDPI);
 #ifndef PLATFORM_WEB
     ToggleBorderlessWindowed();
     SetTargetFPS(0);
 #endif
+
+    
     InitWindow(1280, 720, "gas");
     InitAudioDevice();
     
@@ -36,6 +39,17 @@ int main()
 }
 
 void UpdateDrawFrame() {
+#if defined(PLATFORM_WEB)
+    if (IsWindowResized())
+    {
+        double dpr = emscripten_get_device_pixel_ratio();
+
+        emscripten_set_canvas_size(
+            GetScreenWidth() * dpr,
+            GetScreenHeight() * dpr
+        );
+    }
+#endif
     BeginDrawing();
     ClearBackground(BLACK);
     
